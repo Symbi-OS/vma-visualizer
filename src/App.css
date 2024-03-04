@@ -1,0 +1,15 @@
+.d3-component {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust the height as necessary */
+}
+
+/* Style to prevent scrolling if the SVG is not larger than the viewport */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* This prevents scrolling */
+  background-color: #1f1d28;
+}
