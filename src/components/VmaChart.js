@@ -133,11 +133,33 @@ function visualizePagesWithinGroups(svg, groupDimensions, coloredAttribute, dyna
   });
 }
 
-const VmaChart = ({ vmaData }) => {
+function renderVmaVisualization(svg, vmaData, pageAttribute) {
+  // Group the VMAs
+  const groupedVMAs = groupVMAs(vmaData);
+
+  // Calculate the maximum address range for scaling
+  const maxAddressRange = groupedVMAs.reduce((max, group) => {
+    const rangeStart = parseInt(group[0].start, 16);
+    const rangeEnd = parseInt(group[group.length - 1].end, 16);
+    const range = rangeEnd - rangeStart;
+    return range > max ? range : max;
+  }, 0);
+
+  // Calculate dimensions for each group
+  const groupDimensions = calculateGroupDimensions(groupedVMAs, maxAddressRange);
+
+  // Draw rectangles for each group
+  drawGroupRectangles(svg, groupDimensions);
+
+  // After drawing VMA group rectangles...
+  visualizePagesWithinGroups(svg, groupDimensions, pageAttribute);
+}
+
+const VmaChart = ({ dataset1, dataset2, pageAttribute }) => {
   const d3Container = useRef(null);
 
   useEffect(() => {
-    if (vmaData && d3Container.current) {
+    if (dataset1 && d3Container.current) {
       // Clear the container before drawing
       d3.select(d3Container.current).selectAll("*").remove();
 
@@ -150,27 +172,9 @@ const VmaChart = ({ vmaData }) => {
         .append('g')
         .attr('transform', `translate(${MARGIN.left},${MARGIN.top})`);
 
-      // Group the VMAs
-      const groupedVMAs = groupVMAs(vmaData);
-
-      // Calculate the maximum address range for scaling
-      const maxAddressRange = groupedVMAs.reduce((max, group) => {
-        const rangeStart = parseInt(group[0].start, 16);
-        const rangeEnd = parseInt(group[group.length - 1].end, 16);
-        const range = rangeEnd - rangeStart;
-        return range > max ? range : max;
-      }, 0);
-
-      // Calculate dimensions for each group
-      const groupDimensions = calculateGroupDimensions(groupedVMAs, maxAddressRange);
-
-      // Draw rectangles for each group
-      drawGroupRectangles(svg, groupDimensions);
-
-      // After drawing VMA group rectangles...
-      visualizePagesWithinGroups(svg, groupDimensions, 'present');
+      renderVmaVisualization(svg, dataset1, pageAttribute)
     }
-  }, [vmaData]);
+  }, [dataset1, dataset2, pageAttribute]);
 
   return (
     <div className="d3-component" ref={d3Container} />

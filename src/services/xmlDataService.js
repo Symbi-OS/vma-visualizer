@@ -38,6 +38,16 @@ const parseVmaXmlToJson = (xmlDoc) => {
         let pageObject = {
           addr: page.getAttribute('addr'),
           present: parseInt(page.getElementsByTagName('present')[0].textContent, 10),
+          read_write: parseInt(page.getElementsByTagName('read_write')[0].textContent, 10),
+          user_supervisor: parseInt(page.getElementsByTagName('user_supervisor')[0].textContent, 10),
+          page_write_through: parseInt(page.getElementsByTagName('page_write_through')[0].textContent, 10),
+          page_cache_disabled: parseInt(page.getElementsByTagName('page_cache_disabled')[0].textContent, 10),
+          accessed: parseInt(page.getElementsByTagName('accessed')[0].textContent, 10),
+          dirty: parseInt(page.getElementsByTagName('dirty')[0].textContent, 10),
+          page_access_type: parseInt(page.getElementsByTagName('page_access_type')[0].textContent, 10),
+          global: parseInt(page.getElementsByTagName('global')[0].textContent, 10),
+          protection_key: parseInt(page.getElementsByTagName('protection_key')[0].textContent, 10),
+          execute_disable: parseInt(page.getElementsByTagName('execute_disable')[0].textContent, 10),
         };
   
         // Add this page to the VMA's pages array
